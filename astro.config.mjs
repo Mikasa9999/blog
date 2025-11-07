@@ -5,9 +5,12 @@ import sitemap from '@astrojs/sitemap';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 
+// https://astro.build/config
 export default defineConfig({
-  site: 'https://your-domain.vercel.app',
+  site: 'https://light-knowledge-blog.vercel.app',
   integrations: [mdx(), tailwind(), sitemap()],
+
+  // Markdown configuration
   markdown: {
     shikiConfig: {
       theme: 'github-dark',
@@ -16,7 +19,24 @@ export default defineConfig({
     remarkPlugins: [remarkMath],
     rehypePlugins: [rehypeKatex]
   },
-  experimental: {
-    contentCollectionCache: true
+
+  // MDX configuration
+  mdx: {
+    syntaxHighlight: 'shiki',
+    shikiConfig: {
+      theme: 'github-dark'
+    }
+  },
+
+  // Build output
+  build: {
+    assets: '_astro'
+  },
+
+  // Vite configuration
+  vite: {
+    optimizeDeps: {
+      exclude: ['@resvg/resvg-js']
+    }
   }
 });

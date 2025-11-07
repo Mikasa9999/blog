@@ -1,7 +1,8 @@
 {
-  "name": "ai-ml-blog",
+  "name": "light-knowledge-blog",
   "type": "module",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "description": "A lightweight knowledge blog built with Astro and TailwindCSS",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -24,5 +25,14 @@
   "devDependencies": {
     "@types/node": "^20.0.0",
     "pagefind": "^1.0.0"
-  }
+  },
+  "keywords": [
+    "astro",
+    "blog",
+    "tailwindcss",
+    "mdx",
+    "knowledge-base"
+  ],
+  "author": "light",
+  "license": "MIT"
 }
