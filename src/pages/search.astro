@@ -1,0 +1,98 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="搜索 - AI/ML 知识博客" backgroundType="search">
+  <!-- Search Header -->
+  <section class="text-center mb-16 py-16 relative overflow-hidden rounded-3xl mx-6">
+    <!-- 背景渐变和图案 -->
+    <div class="absolute inset-0 bg-gradient-to-br from-primary-50/80 via-white/60 to-accent-50/40 dark:from-primary-900/80 dark:via-primary-800/60 dark:to-accent-900/30 backdrop-blur-sm"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-accent-200/20 via-transparent to-transparent dark:from-accent-600/10"></div>
+
+    <!-- 浮动元素 -->
+    <div class="absolute top-8 left-8 w-16 h-16 bg-blue-400/10 rounded-full blur-xl animate-float"></div>
+    <div class="absolute top-16 right-12 w-12 h-12 bg-purple-400/10 rounded-full blur-xl animate-float animation-delay-1000"></div>
+    <div class="absolute bottom-12 left-1/3 w-10 h-10 bg-green-400/10 rounded-full blur-xl animate-float animation-delay-2000"></div>
+
+    <div class="relative z-10 max-w-4xl mx-auto px-6">
+      <h1 class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary-900 via-accent-600 to-purple-600 dark:from-primary-50 dark:via-accent-400 dark:to-purple-400 bg-clip-text text-transparent mb-4 animate-fade-in">
+        全站搜索
+      </h1>
+      <p class="text-xl text-primary-600 dark:text-primary-400 max-w-2xl mx-auto animate-fade-in animation-delay-200">
+        搜索所有人工智能与机器学习相关内容
+      </p>
+    </div>
+  </section>
+
+  <!-- Search Content -->
+  <div class="max-w-4xl mx-auto px-6">
+    <!-- Search Input -->
+    <div class="mb-16">
+      <div class="relative max-w-2xl mx-auto">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="输入关键词搜索文章..."
+          class="w-full px-8 py-5 pl-16 rounded-2xl border border-primary-300/50 dark:border-primary-600/50 bg-white/80 dark:bg-primary-800/80 backdrop-blur-sm text-primary-900 dark:text-primary-50 focus:outline-none focus:ring-4 focus:ring-accent-500/20 focus:border-accent-500 text-xl shadow-lg transition-all duration-300 hover:shadow-xl"
+        />
+        <div class="absolute left-6 top-1/2 transform -translate-y-1/2 text-primary-400 text-2xl">
+          🔍
+        </div>
+      </div>
+    </div>
+
+    <!-- Search Results -->
+    <div id="search-results" class="space-y-8">
+      <div class="text-center py-16">
+        <div class="text-6xl mb-4">🔍</div>
+        <p class="text-primary-600 dark:text-primary-400 text-xl">
+          输入关键词开始搜索
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 搜索功能提示
+    function initSearch() {
+      const searchInput = document.getElementById('search-input');
+      const resultsContainer = document.getElementById('search-results');
+
+      searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.trim();
+
+        if (!query) {
+          resultsContainer.innerHTML = `
+            <div class="text-center py-16">
+              <div class="text-6xl mb-4">🔍</div>
+              <p class="text-primary-600 dark:text-primary-400 text-xl">
+                输入关键词开始搜索
+              </p>
+            </div>
+          `;
+          return;
+        }
+
+        // 显示搜索功能提示
+        resultsContainer.innerHTML = `
+          <div class="text-center py-16">
+            <div class="text-6xl mb-4">🔧</div>
+            <p class="text-primary-600 dark:text-primary-400 text-xl mb-4">
+              搜索功能正在开发中
+            </p>
+            <p class="text-primary-500 dark:text-primary-400">
+              请运行 <code class="bg-primary-100 dark:bg-primary-800 px-2 py-1 rounded">npm run pagefind</code> 生成搜索索引
+            </p>
+          </div>
+        `;
+      });
+    }
+
+    // 页面加载完成后初始化搜索
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initSearch);
+    } else {
+      initSearch();
+    }
+  </script>
+</Layout>

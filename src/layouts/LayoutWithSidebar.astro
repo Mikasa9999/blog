@@ -1,0 +1,135 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+
+// 定义侧边栏主题列表
+const sidebarItems = [
+  {
+    title: '理论基础',
+    href: '/theory',
+    icon: '📚',
+    description: 'AI/ML 核心概念与数学原理'
+  },
+  {
+    title: '算法与模型',
+    href: '/models',
+    icon: '🧠',
+    description: '机器学习算法与深度学习模型'
+  },
+  {
+    title: '实战与应用',
+    href: '/practice',
+    icon: '⚡',
+    description: '项目案例与工程化应用'
+  },
+  {
+    title: '工具与框架',
+    href: '/tools',
+    icon: '🛠️',
+    description: '开发工具与框架指南'
+  },
+  {
+    title: '思考与洞见',
+    href: '/insights',
+    icon: '💡',
+    description: '行业观察与技术趋势'
+  }
+];
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description || "AI/ML 知识博客"} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous" />
+    <title>{title}</title>
+  </head>
+  <body class="bg-white dark:bg-primary-900 text-primary-900 dark:text-primary-50 transition-colors duration-300">
+    <!-- Header -->
+    <header class="border-b border-primary-200 dark:border-primary-700 bg-white dark:bg-primary-900 sticky top-0 z-50">
+      <div class="container mx-auto px-4 py-4">
+        <div class="flex justify-between items-center">
+          <a href="/" class="text-2xl font-bold text-accent-600 dark:text-accent-400">
+            AI/ML Blog
+          </a>
+          <div class="flex items-center space-x-6">
+            <a href="/" class="hover:text-accent-600 dark:hover:text-accent-400 transition-colors">首页</a>
+            <a href="/search" class="hover:text-accent-600 dark:hover:text-accent-400 transition-colors">搜索</a>
+            <button id="theme-toggle" class="p-2 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-800 transition-colors">
+              <span class="dark:hidden">🌙</span>
+              <span class="hidden dark:inline">☀️</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Layout with Sidebar -->
+    <div class="flex min-h-screen">
+      <!-- Sidebar -->
+      <aside class="w-64 bg-primary-50 dark:bg-primary-800 border-r border-primary-200 dark:border-primary-700 fixed h-full overflow-y-auto">
+        <div class="p-6">
+          <h2 class="text-lg font-semibold text-primary-900 dark:text-primary-50 mb-4">知识分类</h2>
+          <nav class="space-y-2">
+            {sidebarItems.map((item) => (
+              <a
+                href={item.href}
+                class="flex items-center space-x-3 p-3 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-700 transition-colors group"
+              >
+                <span class="text-xl">{item.icon}</span>
+                <div>
+                  <div class="font-medium text-primary-900 dark:text-primary-50 group-hover:text-accent-600 dark:group-hover:text-accent-400">
+                    {item.title}
+                  </div>
+                  <div class="text-sm text-primary-600 dark:text-primary-400">
+                    {item.description}
+                  </div>
+                </div>
+              </a>
+            ))}
+          </nav>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="flex-1 ml-64">
+        <div class="max-w-7xl mx-auto px-8 py-8">
+          <slot />
+        </div>
+      </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-primary-200 dark:border-primary-700 bg-white dark:bg-primary-900">
+      <div class="container mx-auto px-4 py-8 text-center text-primary-600 dark:text-primary-400">
+        <p>&copy; 2024 AI/ML 知识博客. 基于 Astro 构建.</p>
+      </div>
+    </footer>
+
+    <script>
+      // 主题切换逻辑
+      const themeToggle = document.getElementById('theme-toggle');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+      function setTheme(theme) {
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+        localStorage.setItem('theme', theme);
+      }
+
+      const savedTheme = localStorage.getItem('theme') || (prefersDark.matches ? 'dark' : 'light');
+      setTheme(savedTheme);
+
+      themeToggle.addEventListener('click', () => {
+        const currentTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+        setTheme(currentTheme);
+      });
+    </script>
+  </body>
+</html>

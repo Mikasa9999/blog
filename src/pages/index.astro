@@ -1,0 +1,118 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import { getCollection } from 'astro:content';
+
+const recentArticles = (await getCollection('blog'))
+  .filter(article => !article.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 8);
+
+const getArticleSlug = (article) => article.slug?.split('/')?.pop() ?? article.slug;
+---
+
+<Layout title="light的知识博客" backgroundType="none">
+  <!-- 顶部图片区域 -->
+  <section class="relative h-80 md:h-96 overflow-hidden bg-gradient-to-br from-primary-50 to-accent-50 dark:from-primary-900 dark:to-accent-900">
+    <!-- 顶部图片 -->
+    <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/backgrounds/home-light.jpg')"></div>
+
+    <!-- 半透明叠加层 -->
+    <div class="absolute inset-0 bg-white/40 dark:bg-black/40"></div>
+
+    <!-- 标题内容 -->
+    <div class="relative z-10 h-full flex flex-col justify-center items-center text-center px-6">
+      <h1 class="text-4xl md:text-5xl font-bold text-primary-900 dark:text-primary-50 mb-4">
+        light的知识博客
+      </h1>
+      <p class="text-lg md:text-xl text-primary-700 dark:text-primary-300 max-w-2xl">
+        探索人工智能与机器学习的深度知识，分享实践经验与技术洞见
+      </p>
+    </div>
+  </section>
+
+  <!-- 主要内容区域 -->
+  <div class="max-w-6xl mx-auto px-6 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- 文章列表 -->
+      <div class="lg:col-span-2">
+        <div class="mb-6">
+          <h2 class="text-xl font-bold text-primary-900 dark:text-primary-50 mb-1">
+            最新文章
+          </h2>
+          <p class="text-sm text-primary-600 dark:text-primary-400">
+            精选最新的人工智能与机器学习相关内容
+          </p>
+        </div>
+
+        {recentArticles.length > 0 ? (
+          <div class="space-y-4">
+            {recentArticles.map((article, index) => (
+              <div class="group bg-white dark:bg-primary-800 border border-primary-200 dark:border-primary-700 rounded-lg p-4 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5">
+                <a href={'/' + article.data.category + '/' + getArticleSlug(article)} class="block">
+                  <h3 class="text-base font-bold text-primary-900 dark:text-primary-50 mb-2 group-hover:text-accent-600 dark:group-hover:text-accent-400 transition-colors duration-200 line-clamp-1">
+                    {article.data.title}
+                  </h3>
+                  <p class="text-primary-600 dark:text-primary-400 text-xs leading-relaxed mb-3 line-clamp-2">
+                    {article.data.description}
+                  </p>
+
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center text-accent-600 dark:text-accent-400 text-xs font-medium group-hover:translate-x-1 transition-transform duration-200">
+                      阅读更多
+                      <svg class="w-3 h-3 ml-1 group-hover:translate-x-0.5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                      </svg>
+                    </div>
+                    <time datetime={article.data.pubDate.toISOString()} class="text-primary-500 dark:text-primary-400 text-xs">
+                      {article.data.pubDate.toLocaleDateString('zh-CN')}
+                    </time>
+                  </div>
+                </a>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div class="text-center py-8">
+            <div class="text-3xl mb-2">📝</div>
+            <p class="text-primary-600 dark:text-primary-400 text-sm">
+              暂无文章，请添加内容到 content 目录
+            </p>
+          </div>
+        )}
+      </div>
+
+      <!-- 作者介绍卡片 -->
+      <div class="lg:col-span-1">
+        <div class="bg-white dark:bg-primary-800 border border-primary-200 dark:border-primary-700 rounded-lg p-6 sticky top-24">
+          <div class="text-center mb-4">
+            <div class="w-16 h-16 bg-gradient-to-br from-accent-400 to-purple-500 rounded-full mx-auto mb-3 flex items-center justify-center text-white font-bold text-xl">
+              AI
+            </div>
+            <h3 class="font-bold text-primary-900 dark:text-primary-50">作者介绍</h3>
+          </div>
+          <div class="space-y-3 text-sm text-primary-600 dark:text-primary-400">
+            <p>专注于人工智能与机器学习领域的技术分享</p>
+            <div class="flex items-center space-x-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <span>持续更新中</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+              </svg>
+              <span>理论与实践结合</span>
+            </div>
+          </div>
+          <div class="mt-4 pt-4 border-t border-primary-200 dark:border-primary-700">
+            <a href="/about" class="block w-full text-center bg-primary-100 dark:bg-primary-700 hover:bg-primary-200 dark:hover:bg-primary-600 text-primary-700 dark:text-primary-300 py-2 rounded text-sm transition-colors duration-200">
+              了解更多
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

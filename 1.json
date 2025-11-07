@@ -1,0 +1,73 @@
+{
+  "name": "Reuters_Top10_Summary_Workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://newsapi.org/v2/everything",
+        "options": {},
+        "queryParametersUi": {
+          "parameter": [
+            { "name": "sources", "value": "reuters" },
+            { "name": "sortBy", "value": "popularity" },
+            { "name": "pageSize", "value": "10" },
+            { "name": "apiKey", "value": "替换成你的NewsAPI_KEY" }
+          ]
+        }
+      },
+      "id": "2",
+      "name": "Get Reuters News",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [500, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "const articles = items[0].json.articles || [];\n\nreturn articles.map((a, i) => ({\n  json: {\n    rank: i + 1,\n    title: a.title,\n    url: a.url,\n    description: a.description,\n    publishedAt: a.publishedAt,\n    source: a.source.name\n  }\n}));"
+      },
+      "id": "3",
+      "name": "Format Articles",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [800, 300]
+    },
+    {
+      "parameters": {
+        "operation": "chat",
+        "model": "gpt-4o-mini",
+        "text": "请将以下英文新闻标题与摘要合并成一句50字以内的中文财经摘要：\\n标题：{{$json[\"title\"]}}\\n摘要：{{$json[\"description\"]}}"
+      },
+      "id": "4",
+      "name": "Summarize with ChatGPT",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [1100, 300],
+      "credentials": {
+        "openAiApi": "你的OpenAI凭证名称"
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "for (const item of items) {\n  console.log(`【${item.json.rank}】${item.json.title}\\n摘要：${item.json.text}\\n链接：${item.json.url}\\n`);\n}\nreturn items;"
+      },
+      "id": "5",
+      "name": "Print to Console",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [1400, 300]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": { "main": [[{ "node": "Get Reuters News", "type": "main", "index": 0 }]] },
+    "Get Reuters News": { "main": [[{ "node": "Format Articles", "type": "main", "index": 0 }]] },
+    "Format Articles": { "main": [[{ "node": "Summarize with ChatGPT", "type": "main", "index": 0 }]] },
+    "Summarize with ChatGPT": { "main": [[{ "node": "Print to Console", "type": "main", "index": 0 }]] }
+  }
+}
