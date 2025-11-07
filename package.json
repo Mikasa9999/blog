@@ -4,12 +4,12 @@
   "version": "1.0.0",
   "description": "A lightweight knowledge blog built with Astro and TailwindCSS",
   "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
-    "build": "astro check && astro build",
-    "preview": "astro preview",
-    "astro": "astro",
-    "pagefind": "pagefind --site dist"
+    "dev": "npx astro dev",
+    "start": "npx astro dev",
+    "build": "npx astro build",
+    "preview": "npx astro preview",
+    "astro": "npx astro",
+    "pagefind": "npx pagefind --site dist"
   },
   "dependencies": {
     "@astrojs/mdx": "^3.0.0",

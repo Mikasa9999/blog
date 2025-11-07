@@ -1,0 +1,246 @@
+<!DOCTYPE html><html lang="zh-CN" class="scroll-smooth" data-astro-cid-sckkx6r4> <head><meta charset="UTF-8"><meta name="description" content="系统讲解 LangChain 中 Agent 的核心结构、工具调用机制与 LLM 交互流程，帮助理解其在智能体框架中的作用。"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous"><title>LangChain Agent 原理与工作机制 | light的知识博客</title><link rel="stylesheet" href="/_astro/_slug_.Dypz7GXS.css"><script type="module" src="/_astro/hoisted.n3v2uKZh.js"></script></head> <body class="bg-gradient-to-br from-primary-50 via-white to-accent-50/30 dark:from-primary-950 dark:via-primary-900 dark:to-accent-900/20 text-primary-900 dark:text-primary-50 transition-colors duration-300 relative" data-astro-cid-sckkx6r4> <!-- 背景图片层 -->  <!-- 背景装饰元素 --> <div class="fixed inset-0 -z-10 overflow-hidden" data-astro-cid-sckkx6r4> <!-- 网格背景 --> <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,black,transparent)] dark:bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)]" data-astro-cid-sckkx6r4></div> <!-- 渐变光斑 --> <div class="absolute -top-40 -right-40 w-80 h-80 bg-accent-400/20 rounded-full blur-3xl dark:bg-accent-600/10" data-astro-cid-sckkx6r4></div> <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-400/20 rounded-full blur-3xl dark:bg-blue-600/10" data-astro-cid-sckkx6r4></div> <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl dark:bg-purple-600/5" data-astro-cid-sckkx6r4></div> </div> <header class="border-b border-primary-200 dark:border-primary-700 bg-white dark:bg-primary-900 sticky top-0 z-40" data-astro-cid-sckkx6r4> <nav class="container mx-auto px-4 py-3" data-astro-cid-sckkx6r4> <div class="flex justify-between items-center" data-astro-cid-sckkx6r4> <a href="/" class="text-lg font-semibold text-primary-900 dark:text-primary-50 hover:text-primary-700 dark:hover:text-primary-300 transition-colors duration-200 flex items-center space-x-2" data-astro-cid-sckkx6r4> <div class="w-5 h-5 bg-primary-600 dark:bg-primary-400 rounded flex items-center justify-center text-white text-xs font-medium" data-astro-cid-sckkx6r4>
+知
+</div> <span data-astro-cid-sckkx6r4>light的知识博客</span> </a> <div class="flex items-center space-x-4" data-astro-cid-sckkx6r4> <a href="/" class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-50 transition-colors duration-200 py-1 px-2 rounded-md hover:bg-primary-100 dark:hover:bg-primary-800" data-astro-cid-sckkx6r4>
+首页
+</a> <!-- 分类下拉菜单 --> <div class="relative group" data-astro-cid-sckkx6r4> <button class="flex items-center text-sm text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-50 transition-colors duration-200 py-1 px-2 rounded-md hover:bg-primary-100 dark:hover:bg-primary-800" data-astro-cid-sckkx6r4>
+分类
+<svg class="w-3 h-3 ml-1 group-hover:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-astro-cid-sckkx6r4> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" data-astro-cid-sckkx6r4></path> </svg> </button> <div class="absolute top-full left-0 mt-1 w-48 bg-white dark:bg-primary-800 border border-primary-200 dark:border-primary-700 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50" data-astro-cid-sckkx6r4> <div class="py-1" data-astro-cid-sckkx6r4> <a href="/theory" class="block px-3 py-2 text-sm text-primary-600 dark:text-primary-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-150" data-astro-cid-sckkx6r4>
+理论基础
+</a> <a href="/models" class="block px-3 py-2 text-sm text-primary-600 dark:text-primary-400 hover:bg-green-50 dark:hover:bg-green-900/20 hover:text-green-600 dark:hover:text-green-400 transition-colors duration-150" data-astro-cid-sckkx6r4>
+算法与模型
+</a> <a href="/practice" class="block px-3 py-2 text-sm text-primary-600 dark:text-primary-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:text-purple-600 dark:hover:text-purple-400 transition-colors duration-150" data-astro-cid-sckkx6r4>
+实战与应用
+</a> <a href="/tools" class="block px-3 py-2 text-sm text-primary-600 dark:text-primary-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600 dark:hover:text-orange-400 transition-colors duration-150" data-astro-cid-sckkx6r4>
+工具与框架
+</a> <a href="/insights" class="block px-3 py-2 text-sm text-primary-600 dark:text-primary-400 hover:bg-pink-50 dark:hover:bg-pink-900/20 hover:text-pink-600 dark:hover:text-pink-400 transition-colors duration-150" data-astro-cid-sckkx6r4>
+思考与洞见
+</a> </div> </div> </div> <a href="/search" class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-50 transition-colors duration-200 py-1 px-2 rounded-md hover:bg-primary-100 dark:hover:bg-primary-800" data-astro-cid-sckkx6r4>
+搜索
+</a> <a href="/about" class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-50 transition-colors duration-200 py-1 px-2 rounded-md hover:bg-primary-100 dark:hover:bg-primary-800" data-astro-cid-sckkx6r4>
+关于
+</a> <button id="theme-toggle" class="p-1 rounded-md hover:bg-primary-100 dark:hover:bg-primary-800 transition-colors duration-200" data-astro-cid-sckkx6r4> <span class="dark:hidden text-sm" data-astro-cid-sckkx6r4>🌙</span> <span class="hidden dark:inline text-sm" data-astro-cid-sckkx6r4>☀️</span> </button> </div> </div> </nav> </header> <main data-astro-cid-sckkx6r4>  <div class="max-w-4xl mx-auto px-6 py-8"> <article class="bg-white dark:bg-primary-800 border border-primary-200 dark:border-primary-700 rounded-lg p-8"> <header class="mb-8"> <div class="flex items-center space-x-4 mb-4"> <span class="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"> theory </span> <time class="text-primary-600 dark:text-primary-400 text-sm"> 2024年10月3日 </time> </div> <h1 class="text-3xl font-bold text-primary-900 dark:text-primary-50 mb-4"> LangChain Agent 原理与工作机制 </h1> <p class="text-lg text-primary-600 dark:text-primary-400 leading-relaxed"> 系统讲解 LangChain 中 Agent 的核心结构、工具调用机制与 LLM 交互流程，帮助理解其在智能体框架中的作用。 </p> <div class="flex flex-wrap gap-2 mt-6"> <span class="px-3 py-1 bg-primary-100 dark:bg-primary-800 text-primary-700 dark:text-primary-300 rounded-full text-sm">
+#langchain </span><span class="px-3 py-1 bg-primary-100 dark:bg-primary-800 text-primary-700 dark:text-primary-300 rounded-full text-sm">
+#agent </span><span class="px-3 py-1 bg-primary-100 dark:bg-primary-800 text-primary-700 dark:text-primary-300 rounded-full text-sm">
+#llm </span><span class="px-3 py-1 bg-primary-100 dark:bg-primary-800 text-primary-700 dark:text-primary-300 rounded-full text-sm">
+#tool-calling </span><span class="px-3 py-1 bg-primary-100 dark:bg-primary-800 text-primary-700 dark:text-primary-300 rounded-full text-sm">
+#prompt-engineering </span> </div> </header> <!-- 文章内容 --> <div class="border-t border-primary-200 dark:border-primary-700 pt-8"> <div class="prose prose-lg dark:prose-invert max-w-none"> <h2 id="来看一个稍微复杂的例子">来看一个稍微复杂的例子</h2>
+<p>这个任务中，我们给出一个格式化的文本文件 <code>input.csv</code>，然后提出修改要求，让 agent 调用 LLM 生成代码并自动执行，将结果保存到一个新的文件中，然后再验证修改结果是否符合预期。</p>
+<hr>
+<h3 id="-工具定义">🧩 工具定义</h3>
+<p>以下定义了四个核心工具，分别用于<strong>文件预览、代码生成、代码执行与结果验证</strong>。</p>
+<ol>
+<li>
+<p><strong>文件预览工具</strong></p>
+<ul>
+<li>用于查看结构化文件的部分内容，让大模型理解输入文件的结构。
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="plaintext"><code><span class="line"><span>def preview_file(path: str) -> str:</span></span>
+<span class="line"><span>    """读取指定文件前 10 行"""</span></span>
+<span class="line"><span>    try:</span></span>
+<span class="line"><span>        with open(path, "r", encoding="utf-8", errors="ignore") as f:</span></span>
+<span class="line"><span>            preview = [next(f).strip() for _ in range(10)]</span></span>
+<span class="line"><span>        return "\n".join(preview)</span></span>
+<span class="line"><span>    except Exception as e:</span></span>
+<span class="line"><span>        return f"[错误] 无法读取文件: {e}"</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>file_preview_tool = Tool(</span></span>
+<span class="line"><span>    name="FilePreviewTool",</span></span>
+<span class="line"><span>    func=preview_file,</span></span>
+<span class="line"><span>    description="读取文件前 10 行，输入参数为文件路径字符串，例如 'data.csv'"</span></span>
+<span class="line"><span>)</span></span>
+<span class="line"><span></span></span></code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>代码生成工具</strong></p>
+<ul>
+<li>LLM 根据自然语言指令生成完整的 Python 数据处理代码。
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="plaintext"><code><span class="line"><span>def generate_code(instruction: str) -> str:</span></span>
+<span class="line"><span>    """根据指令生成 Python 代码并保存到当前目录"""</span></span>
+<span class="line"><span>    prompt = f"""</span></span>
+<span class="line"><span>    你是一个 Python 数据分析专家。</span></span>
+<span class="line"><span>    请根据以下用户指令生成完整的 pandas 代码：</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    用户要求：</span></span>
+<span class="line"><span>    {instruction}</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    要求：</span></span>
+<span class="line"><span>    - 输入文件名为 'input.csv'</span></span>
+<span class="line"><span>    - 输出文件名为 'output.csv'</span></span>
+<span class="line"><span>    - 代码必须能直接运行</span></span>
+<span class="line"><span>    - 只输出纯代码，不要任何 Markdown 格式</span></span>
+<span class="line"><span>    """</span></span>
+<span class="line"><span>    code = llm.invoke(prompt).content.strip()</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    # 清理 Markdown 标记与奇怪引号</span></span>
+<span class="line"><span>    code = code.replace("```python", "").replace("```", "").strip()</span></span>
+<span class="line"><span>    save_path = "generated_code.py"</span></span>
+<span class="line"><span>    with open(save_path, "w", encoding="utf-8") as f:</span></span>
+<span class="line"><span>        f.write(code)</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    return f"[代码已保存] {os.path.abspath(save_path)}\n---\n{code}"</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>code_generator_tool = Tool(</span></span>
+<span class="line"><span>    name="CodeGeneratorTool",</span></span>
+<span class="line"><span>    func=generate_code,</span></span>
+<span class="line"><span>    description="根据自然语言生成数据处理 Python 代码，输入为操作描述字符串。"</span></span>
+<span class="line"><span>)</span></span>
+<span class="line"><span></span></span></code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>执行代码工具</strong></p>
+<ul>
+<li>负责执行由上一步生成的 Python 脚本。
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="plaintext"><code><span class="line"><span>def execute_generated_code(_: str) -> str:</span></span>
+<span class="line"><span>    """执行当前目录下的 generated_code.py 文件"""</span></span>
+<span class="line"><span>    file_path = "generated_code.py"</span></span>
+<span class="line"><span>    if not os.path.exists(file_path):</span></span>
+<span class="line"><span>        return "[错误] 未找到生成的代码文件。"</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    output = io.StringIO()</span></span>
+<span class="line"><span>    try:</span></span>
+<span class="line"><span>        with contextlib.redirect_stdout(output):</span></span>
+<span class="line"><span>            with open(file_path, "r", encoding="utf-8") as f:</span></span>
+<span class="line"><span>                code = f.read()</span></span>
+<span class="line"><span>            exec(code, {"__name__": "__main__"})</span></span>
+<span class="line"><span>        return "[执行成功]\n" + output.getvalue()</span></span>
+<span class="line"><span>    except Exception as e:</span></span>
+<span class="line"><span>        return f"[执行错误] {e}"</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>python_executor_tool = Tool(</span></span>
+<span class="line"><span>    name="PythonExecutorTool",</span></span>
+<span class="line"><span>    func=execute_generated_code,</span></span>
+<span class="line"><span>    description="执行当前目录下的 generated_code.py，不需要输入参数。"</span></span>
+<span class="line"><span>)</span></span>
+<span class="line"><span></span></span></code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>验证工具</strong></p>
+<ul>
+<li>根据任务指令自动生成验证逻辑，检查输出结果是否符合预期。
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="plaintext"><code><span class="line"><span>def verify_task(instruction: str) -> str:</span></span>
+<span class="line"><span>    """</span></span>
+<span class="line"><span>    根据用户要求生成并执行验证代码，用于检查 output.csv 是否满足任务目标。</span></span>
+<span class="line"><span>    允许 AI 自行生成验证逻辑。</span></span>
+<span class="line"><span>    """</span></span>
+<span class="line"><span>    prompt = f"""</span></span>
+<span class="line"><span>    你是一名数据质量检查专家。</span></span>
+<span class="line"><span>    请根据以下任务指令，编写一段 Python 代码，用于验证任务是否正确完成。</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    任务指令：</span></span>
+<span class="line"><span>    {instruction}</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    输入文件：'output.csv'</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    要求：</span></span>
+<span class="line"><span>    - 代码中读取 output.csv</span></span>
+<span class="line"><span>    - 输出清晰的验证结果（例如“所有列均无空值”或“仍存在空值列”）</span></span>
+<span class="line"><span>    - 使用 print() 打印验证结果</span></span>
+<span class="line"><span>    - 代码必须能直接运行</span></span>
+<span class="line"><span>    - 只输出纯代码，不要任何 Markdown 格式</span></span>
+<span class="line"><span>    """</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    code = llm.invoke(prompt).content.strip()</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    # 保存验证代码</span></span>
+<span class="line"><span>    verify_path = "verify_code.py"</span></span>
+<span class="line"><span>    with open(verify_path, "w", encoding="utf-8") as f:</span></span>
+<span class="line"><span>        f.write(code)</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    # 执行验证代码</span></span>
+<span class="line"><span>    output = io.StringIO()</span></span>
+<span class="line"><span>    try:</span></span>
+<span class="line"><span>        with contextlib.redirect_stdout(output):</span></span>
+<span class="line"><span>            exec(code, {"__name__": "__main__"})</span></span>
+<span class="line"><span>        result = output.getvalue().strip()</span></span>
+<span class="line"><span>        return f"[验证代码已保存] {os.path.abspath(verify_path)}\n---\n{code}\n\n[验证结果]\n{result}"</span></span>
+<span class="line"><span>    except Exception as e:</span></span>
+<span class="line"><span>        return f"[执行错误] {e}\n---\n代码内容:\n{code}"</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>verifier_tool = Tool(</span></span>
+<span class="line"><span>    name="VerifierTool",</span></span>
+<span class="line"><span>    func=verify_task,</span></span>
+<span class="line"><span>    description="根据任务指令自动生成并执行验证代码，输入为任务说明字符串。"</span></span>
+<span class="line"><span>)</span></span>
+<span class="line"><span></span></span></code></pre>
+</li>
+</ul>
+</li>
+</ol>
+<hr>
+<hr>
+<h3 id="️测试一下">⚙️测试一下</h3>
+<ol>
+<li><strong>准备测试文件</strong>
+<ul>
+<li>一个20行的.csv文件
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="plaintext"><code><span class="line"><span>name,age,city,income</span></span>
+<span class="line"><span>Alice,25,New York,55000</span></span>
+<span class="line"><span>Bob,,Los Angeles,48000</span></span>
+<span class="line"><span>Charlie,30,Chicago,</span></span>
+<span class="line"><span>David,28,,62000</span></span>
+<span class="line"><span>Eve,25,New York,55000</span></span>
+<span class="line"><span>Frank,35,Chicago,70000</span></span>
+<span class="line"><span>Grace,29,Los Angeles,52000</span></span>
+<span class="line"><span>Heidi,26,New York,</span></span>
+<span class="line"><span>Ivan,31,Chicago,60000</span></span>
+<span class="line"><span>Judy,,Los Angeles,58000</span></span>
+<span class="line"><span>Alice,25,New York,55000</span></span>
+<span class="line"><span>Bob,,Los Angeles,48000</span></span>
+<span class="line"><span>Charlie,30,Chicago,</span></span>
+<span class="line"><span>David,28,,62000</span></span>
+<span class="line"><span>Eve,25,New Yo0rk,55000</span></span>
+<span class="line"><span>Frank,35,Chicago,70000</span></span>
+<span class="line"><span>Grace,29,Los Angeles,52000</span></span>
+<span class="line"><span>Heidi,26,New York,</span></span>
+<span class="line"><span>Ivan,31,Chicago,60000</span></span>
+<span class="line"><span>Judy,,Los Angeles,5800</span></span>
+<span class="line"><span></span></span></code></pre>
+</li>
+</ul>
+</li>
+<li><strong>输入命令</strong>
+<ul>
+<li>输入我们想要的修改
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="plaintext"><code><span class="line"><span>if __name__ == "__main__":</span></span>
+<span class="line"><span> file_path = "input.csv"</span></span>
+<span class="line"><span> instruction = "删除数据行最后两行，并保存为 output.csv"</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span> query = (</span></span>
+<span class="line"><span>     f"请用 FilePreviewTool 读取 {file_path} 文件前 10 行，"</span></span>
+<span class="line"><span>     f"然后根据以下指令：{instruction}，"</span></span>
+<span class="line"><span>     f"使用 CodeGeneratorTool 生成并保存处理代码，"</span></span>
+<span class="line"><span>     f"用 PythonExecutorTool 执行保存的代码，"</span></span>
+<span class="line"><span>     f"最后用VerifierTool自动生成代码执行验证是否成功完成任务 。"</span></span>
+<span class="line"><span> )</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span> print(f"➡️ 当前任务: {query}\n")</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span> result = agent.invoke({"input": query})</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span> print("\n=== ✅ 最终结果 ===")</span></span>
+<span class="line"><span> print(result["output"])</span></span>
+<span class="line"><span></span></span></code></pre>
+查看执行过程
+<img  src="/_astro/image.CVKJrR38_ZYtfoQ.webp" alt="alt text" width="2175" height="904" loading="lazy" decoding="async">
+从图中我们可以看到，agent先调用预览函数了解到了文件结构，再调用代码生成工具生成代码，并运行，可以看到代码执行成功
+<img  src="/_astro/image-1.2gb3d_45_Z1ux1K8.webp" alt="alt text" width="1715" height="893" loading="lazy" decoding="async">
+然后执行成功后调用验证工具，该工具会自动生成代码验证，可以看到生成的代码对比了文件前后，发现行数减少，认为确实成功执行了，并返回结果
+<img  src="/_astro/image-2.Cs3w5Aom_Z1OO9I9.webp" alt="alt text" width="2176" height="270" loading="lazy" decoding="async">
+最后llm判断任务完成，输出finnal answer，通过观察可得，每个时间步llm向agent返回thought、action、action input，然后agent根据执行对应action并将之前的内容加上当前步骤的observation返回给llm，llm根据当前的状态判断任务是否终止或是选择下一个操作。整个过程对于单次来说其实是独立的，agent每次查询都是独立的，只是会把当前任务的历史信息每次都拼接起来发送给llm，llm自身不维护状态，状态要靠agent发送过来。上一个例子，我们通过查看每次agent发送的prompt可以得到这个结论</li>
+</ul>
+</li>
+</ol>
+<h3 id="-小结">📘 小结</h3>
+<p>该示例展示了 LangChain Agent 如何通过一组工具协同工作，使 LLM 能够实现：</p>
+<ol>
+<li><strong>文件内容理解</strong>（预览工具）</li>
+<li><strong>动态生成可执行代码</strong>（代码生成工具）</li>
+<li><strong>自动执行任务逻辑</strong>（执行工具）</li>
+<li><strong>结果自检与验证</strong>（验证工具）</li>
+</ol>
+<p>整个过程展示了 <strong>LLM + 工具调用机制（Tool Calling）</strong> 的强大组合，为构建智能体奠定了基础。</p> </div> </div> <!-- 文章底部 --> <footer class="border-t border-primary-200 dark:border-primary-700 mt-8 pt-8"> <div class="flex justify-between items-center text-sm text-primary-500 dark:text-primary-400"> <span>发布于 2024/10/3</span>  </div> </footer> </article> </div>  </main> <footer class="border-t border-primary-200 dark:border-primary-700 mt-16" data-astro-cid-sckkx6r4> <div class="container mx-auto px-4 py-8 text-center text-primary-600 dark:text-primary-400" data-astro-cid-sckkx6r4> <p data-astro-cid-sckkx6r4>&copy; 2024 AI/ML 知识博客. 基于 Astro 构建.</p> </div> </footer>  </body> </html>

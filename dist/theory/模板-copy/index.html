@@ -1,0 +1,256 @@
+<!DOCTYPE html><html lang="zh-CN" class="scroll-smooth" data-astro-cid-sckkx6r4> <head><meta charset="UTF-8"><meta name="description" content="http2/3"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous"><title>http/2 /3 | light的知识博客</title><link rel="stylesheet" href="/_astro/_slug_.Dypz7GXS.css"><script type="module" src="/_astro/hoisted.n3v2uKZh.js"></script></head> <body class="bg-gradient-to-br from-primary-50 via-white to-accent-50/30 dark:from-primary-950 dark:via-primary-900 dark:to-accent-900/20 text-primary-900 dark:text-primary-50 transition-colors duration-300 relative" data-astro-cid-sckkx6r4> <!-- 背景图片层 -->  <!-- 背景装饰元素 --> <div class="fixed inset-0 -z-10 overflow-hidden" data-astro-cid-sckkx6r4> <!-- 网格背景 --> <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,black,transparent)] dark:bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)]" data-astro-cid-sckkx6r4></div> <!-- 渐变光斑 --> <div class="absolute -top-40 -right-40 w-80 h-80 bg-accent-400/20 rounded-full blur-3xl dark:bg-accent-600/10" data-astro-cid-sckkx6r4></div> <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-400/20 rounded-full blur-3xl dark:bg-blue-600/10" data-astro-cid-sckkx6r4></div> <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl dark:bg-purple-600/5" data-astro-cid-sckkx6r4></div> </div> <header class="border-b border-primary-200 dark:border-primary-700 bg-white dark:bg-primary-900 sticky top-0 z-40" data-astro-cid-sckkx6r4> <nav class="container mx-auto px-4 py-3" data-astro-cid-sckkx6r4> <div class="flex justify-between items-center" data-astro-cid-sckkx6r4> <a href="/" class="text-lg font-semibold text-primary-900 dark:text-primary-50 hover:text-primary-700 dark:hover:text-primary-300 transition-colors duration-200 flex items-center space-x-2" data-astro-cid-sckkx6r4> <div class="w-5 h-5 bg-primary-600 dark:bg-primary-400 rounded flex items-center justify-center text-white text-xs font-medium" data-astro-cid-sckkx6r4>
+知
+</div> <span data-astro-cid-sckkx6r4>light的知识博客</span> </a> <div class="flex items-center space-x-4" data-astro-cid-sckkx6r4> <a href="/" class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-50 transition-colors duration-200 py-1 px-2 rounded-md hover:bg-primary-100 dark:hover:bg-primary-800" data-astro-cid-sckkx6r4>
+首页
+</a> <!-- 分类下拉菜单 --> <div class="relative group" data-astro-cid-sckkx6r4> <button class="flex items-center text-sm text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-50 transition-colors duration-200 py-1 px-2 rounded-md hover:bg-primary-100 dark:hover:bg-primary-800" data-astro-cid-sckkx6r4>
+分类
+<svg class="w-3 h-3 ml-1 group-hover:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-astro-cid-sckkx6r4> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" data-astro-cid-sckkx6r4></path> </svg> </button> <div class="absolute top-full left-0 mt-1 w-48 bg-white dark:bg-primary-800 border border-primary-200 dark:border-primary-700 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50" data-astro-cid-sckkx6r4> <div class="py-1" data-astro-cid-sckkx6r4> <a href="/theory" class="block px-3 py-2 text-sm text-primary-600 dark:text-primary-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-150" data-astro-cid-sckkx6r4>
+理论基础
+</a> <a href="/models" class="block px-3 py-2 text-sm text-primary-600 dark:text-primary-400 hover:bg-green-50 dark:hover:bg-green-900/20 hover:text-green-600 dark:hover:text-green-400 transition-colors duration-150" data-astro-cid-sckkx6r4>
+算法与模型
+</a> <a href="/practice" class="block px-3 py-2 text-sm text-primary-600 dark:text-primary-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:text-purple-600 dark:hover:text-purple-400 transition-colors duration-150" data-astro-cid-sckkx6r4>
+实战与应用
+</a> <a href="/tools" class="block px-3 py-2 text-sm text-primary-600 dark:text-primary-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600 dark:hover:text-orange-400 transition-colors duration-150" data-astro-cid-sckkx6r4>
+工具与框架
+</a> <a href="/insights" class="block px-3 py-2 text-sm text-primary-600 dark:text-primary-400 hover:bg-pink-50 dark:hover:bg-pink-900/20 hover:text-pink-600 dark:hover:text-pink-400 transition-colors duration-150" data-astro-cid-sckkx6r4>
+思考与洞见
+</a> </div> </div> </div> <a href="/search" class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-50 transition-colors duration-200 py-1 px-2 rounded-md hover:bg-primary-100 dark:hover:bg-primary-800" data-astro-cid-sckkx6r4>
+搜索
+</a> <a href="/about" class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-50 transition-colors duration-200 py-1 px-2 rounded-md hover:bg-primary-100 dark:hover:bg-primary-800" data-astro-cid-sckkx6r4>
+关于
+</a> <button id="theme-toggle" class="p-1 rounded-md hover:bg-primary-100 dark:hover:bg-primary-800 transition-colors duration-200" data-astro-cid-sckkx6r4> <span class="dark:hidden text-sm" data-astro-cid-sckkx6r4>🌙</span> <span class="hidden dark:inline text-sm" data-astro-cid-sckkx6r4>☀️</span> </button> </div> </div> </nav> </header> <main data-astro-cid-sckkx6r4>  <div class="max-w-4xl mx-auto px-6 py-8"> <article class="bg-white dark:bg-primary-800 border border-primary-200 dark:border-primary-700 rounded-lg p-8"> <header class="mb-8"> <div class="flex items-center space-x-4 mb-4"> <span class="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"> theory </span> <time class="text-primary-600 dark:text-primary-400 text-sm"> 2024年11月7日 </time> </div> <h1 class="text-3xl font-bold text-primary-900 dark:text-primary-50 mb-4"> http/2 /3 </h1> <p class="text-lg text-primary-600 dark:text-primary-400 leading-relaxed"> http2/3 </p> <div class="flex flex-wrap gap-2 mt-6"> <span class="px-3 py-1 bg-primary-100 dark:bg-primary-800 text-primary-700 dark:text-primary-300 rounded-full text-sm">
+# </span> </div> </header> <!-- 文章内容 --> <div class="border-t border-primary-200 dark:border-primary-700 pt-8"> <div class="prose prose-lg dark:prose-invert max-w-none"> <p>好的，这是一个非常关键的问题！我们来深入剖析 <strong>HTTP/2 over TCP</strong> 这种模式下，传输层（TCP层）的具体情况和面临的挑战。</p>
+<h3 id="核心矛盾应用层的多车道-vs-传输层的单行道">核心矛盾：应用层的”多车道” vs 传输层的”单行道”</h3>
+<p>想象一下：</p>
+<ul>
+<li><strong>HTTP/2（应用层）</strong> 修建了一个宏伟的<strong>立交桥设计图</strong>，规划了多条并行的虚拟车道（流）。</li>
+<li><strong>TCP（传输层）</strong> 却只提供了一条<strong>实实在在的单行道公路</strong>。</li>
+</ul>
+<p>HTTP/2的”多路复用”就是试图在这条单行道上，通过极其高效的交通管理，模拟出多车道并行的效果。</p>
+<hr>
+<h3 id="传输层tcp的视角它看到了什么">传输层（TCP）的视角：它看到了什么？</h3>
+<p>对于TCP协议来说，它完全不知道上层HTTP/2的”流”、“帧”这些高级概念。TCP的视角非常单纯：</p>
+<ol>
+<li><strong>它看到一个连续的字节流</strong>：TCP把连接两端视为两个巨大的、双向流动的字节流。发送端不停地写入字节，接收端按顺序读取字节。</li>
+<li><strong>它看到的是乱序的二进制数据</strong>：从HTTP/2层交下来的、带着不同<code>流ID</code>的帧，被TCP简单地视为一串需要传输的二进制数据。它不关心内容，只负责可靠地传输。</li>
+</ol>
+<p><strong>物理传输过程如下：</strong></p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="plaintext"><code><span class="line"><span>[应用层 - HTTP/2]</span></span>
+<span class="line"><span>    ↓</span></span>
+<span class="line"><span>"把流1的HEADERS帧、流2的DATA帧、流3的HEADERS帧... 按顺序交给TCP"</span></span>
+<span class="line"><span>    ↓</span></span>
+<span class="line"><span>[传输层 - TCP]</span></span>
+<span class="line"><span>    ↓</span></span>
+<span class="line"><span>"好的，我不管它们是什么，我把所有这些帧的数据拼接成一个长长的字节流，然后分成一个个TCP段（Segment）发送出去。"</span></span>
+<span class="line"><span>    ↓</span></span>
+<span class="line"><span>[网络层 - IP]</span></span>
+<span class="line"><span>    ↓</span></span>
+<span class="line"><span>"打包成IP包，发送！"</span></span>
+<span class="line"><span></span></span></code></pre>
+<p><strong>在接收端：</strong></p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="plaintext"><code><span class="line"><span>[网络层 - IP]</span></span>
+<span class="line"><span>    ↓</span></span>
+<span class="line"><span>"收到一堆IP包，交给TCP重组。"</span></span>
+<span class="line"><span>    ↓</span></span>
+<span class="line"><span>[传输层 - TCP]</span></span>
+<span class="line"><span>    ↓</span></span>
+<span class="line"><span>"好的，我会严格按照顺序把这些IP包里的数据重组回那个长长的、完整的字节流，然后交给上面的应用。"</span></span>
+<span class="line"><span>    ↓</span></span>
+<span class="line"><span>[应用层 - HTTP/2]</span></span>
+<span class="line"><span>    ↓</span></span>
+<span class="line"><span>"谢天谢地，字节流终于来了！我得赶紧解析帧头，看看每个帧的`流ID`，然后把它们分拣到不同的'流'的组装车间去。"</span></span>
+<span class="line"><span></span></span></code></pre>
+<hr>
+<h3 id="http2-over-tcp-的核心问题tcp的队头阻塞">HTTP/2 over TCP 的核心问题：TCP的”队头阻塞”</h3>
+<p>这正是所有问题的根源。因为TCP必须在传输层保证字节流的<strong>严格顺序</strong>。</p>
+<p><strong>让我们来看一个灾难性的场景：</strong></p>
+<p>假设物理链路上按顺序发送了5个TCP包，每个包携带了不同HTTP/2流的帧：</p>
+<p><code>[TCP包1: 流1的帧]</code> -> <code>[TCP包2: 流2的帧]</code> -> <code>[TCP包3: 流3的帧]</code> -> <code>[TCP包4: 流1的帧]</code> -> <code>[TCP包5: 流2的帧]</code></p>
+<p><strong>现在，不幸的事情发生了：<code>TCP包3</code>在传输途中丢失了！</strong></p>
+<p>这时，在<strong>传输层（TCP）</strong> 会发生什么？</p>
+<ol>
+<li><strong>TCP发现包3丢失</strong>，会请求发送方重传这个包。</li>
+<li>在等待包3重传的过程中，<strong>接收方的TCP协议栈虽然已经成功收到了包4和包5，但它绝不会将它们递交给上层的HTTP/2！</strong></li>
+<li><strong>为什么？</strong> 因为TCP必须保证字节流的顺序。它不能把包4和包5的数据先交上去，那样会导致字节流错乱。它必须等丢失的包3到来，拼凑出完整的、有序的字节流后，才能一次性提交。</li>
+</ol>
+<p><strong>现在，在应用层（HTTP/2）会发生什么？</strong></p>
+<ul>
+<li>HTTP/2协议在干等！它拿不到任何数据。</li>
+<li><strong>流1</strong> 无法继续组装（因为它的第二个帧在包4里，被卡住了）。</li>
+<li><strong>流2</strong> 无法继续组装（因为它的第二个帧在包5里，也被卡住了）。</li>
+<li><strong>流3</strong> 更是因为包3丢失而直接中断。</li>
+</ul>
+<p><strong>结果就是：一个TCP包的丢失，导致了这个TCP连接上所有HTTP流的暂停！这就是TCP层的队头阻塞。</strong></p>
+<h3 id="总结http2-over-tcp-传输层的本质">总结：HTTP/2 over TCP 传输层的本质</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th align="left">特性</th><th align="left">描述</th></tr></thead><tbody><tr><td align="left"><strong>传输协议</strong></td><td align="left"><strong>TCP</strong></td></tr><tr><td align="left"><strong>TCP的视角</strong></td><td align="left">一个<strong>有序的、可靠的字节流</strong>。对HTTP/2的帧结构一无所知。</td></tr><tr><td align="left"><strong>数据形态</strong></td><td align="left">HTTP/2帧被串行化，拼接成一个连续的二进制字节流进行传输。</td></tr><tr><td align="left"><strong>核心问题</strong></td><td align="left"><strong>传输层级队头阻塞</strong>。任何一个TCP数据包的丢失，都会阻塞其后所有已到达的数据包被上层应用读取，从而冻结所有HTTP流。</td></tr><tr><td align="left"><strong>比喻</strong></td><td align="left"><strong>一条被事故阻塞的单行道</strong>。立交桥的设计图（HTTP/2）再完美，如果底下的单行道（TCP）因为一起车祸（丢包）而完全堵死，那么所有车道（流）上的车都动弹不得。</td></tr></tbody></table>
+<p><strong>结论：</strong>
+HTTP/2在应用层的多路复用设计是先进的，但它被陈旧的TCP传输层拖了后腿。这正是推动<strong>HTTP/3 over QUIC</strong>发展的根本原因——QUIC将多路复用的逻辑从应用层下沉到了传输层，并基于UDP实现，从而在传输层本身解决了队头阻塞问题。把这篇解释</p>
+<p>好的，我们来详细解析 <strong>UDP（用户数据报协议）</strong> 的特点。与TCP形成鲜明对比，UDP是一种非常“简单”甚至“原始”的传输层协议。</p>
+<p>它的核心设计哲学是：<strong>“我只管发送，其他一概不管”</strong>。</p>
+<hr>
+<h3 id="udp的核心特点">UDP的核心特点</h3>
+<h4 id="1-无连接">1. <strong>无连接</strong></h4>
+<ul>
+<li><strong>含义</strong>：在通信前不需要像TCP那样进行三次握手来建立连接。</li>
+<li><strong>类比</strong>：就像寄<strong>平信</strong>。你写好信，装进信封，写上地址邮票，扔进邮筒即可。你不需要和收件人提前打通电话说：“喂，我要给你寄信了，你准备一下。”</li>
+<li><strong>影响</strong>：开销极小，延迟极低。非常适合一次性的、短平快的通信。</li>
+</ul>
+<h4 id="2-不可靠传输">2. <strong>不可靠传输</strong></h4>
+<ul>
+<li><strong>含义</strong>：UDP不提供任何保障机制。
+<ul>
+<li><strong>不保证数据包能到达目的地</strong>：数据包可能在网络中丢失。</li>
+<li><strong>不保证数据包的顺序</strong>：先发送的数据包可能会后到达。</li>
+<li><strong>不保证数据包的完整性</strong>：虽然UDP有简单的校验和来检测错误，但如果校验失败，它只是默默地丢弃包，不会要求重传。</li>
+</ul>
+</li>
+<li><strong>类比</strong>：继续用<strong>平信</strong>的比喻。邮局不保证信一定能送到（可能丢失），不保证先寄的信先到（可能乱序），也不保证信在途中不会被雨水弄花（数据损坏）。</li>
+<li><strong>影响</strong>：应用程序需要自己处理丢包、乱序和数据错误的问题。</li>
+</ul>
+<h4 id="3-没有拥塞控制">3. <strong>没有拥塞控制</strong></h4>
+<ul>
+<li><strong>含义</strong>：UDP本身没有内置的机制来感知网络是否拥堵。无论网络状况多么糟糕，UDP都会按照应用程序的要求，以恒定的速率（或尽可能快地）发送数据。</li>
+<li><strong>类比</strong>：像一个不管不顾的“喇叭”，一直在广播，不管听众是否听得清。</li>
+<li><strong>影响</strong>：
+<ul>
+<li><strong>优点</strong>：不会因为网络波动而主动降低发送速率，能提供稳定的数据流（这对直播、视频会议很重要）。</li>
+<li><strong>缺点</strong>：是网络拥堵的“坏公民”。如果大量使用UDP，可能会挤占TCP流量的带宽，导致网络整体性能下降。</li>
+</ul>
+</li>
+</ul>
+<h4 id="4-面向数据报">4. <strong>面向数据报</strong></h4>
+<ul>
+<li><strong>含义</strong>：这是UDP和TCP最根本的区别之一。
+<ul>
+<li><strong>TCP是面向字节流的</strong>：它把数据看作一个没有边界的连续字节流。应用程序写入的数据，在接收端可能会被重新组合。</li>
+<li><strong>UDP是面向数据报的</strong>：它发送和接收的都是一个个独立的、有明确边界的数据包。发送端调用一次发送函数，就会产生一个UDP数据包；接收端调用一次接收函数，就会收到一个<strong>完整的、独立的</strong>数据包，不会出现半个包或者两个包粘在一起的情况。</li>
+</ul>
+</li>
+<li><strong>类比</strong>：TCP像用<strong>水管</strong>接水，你看到的是连续的水流；UDP像收<strong>快递包裹</strong>，每个包裹都是独立的，你一次收到一个完整的盒子。</li>
+<li><strong>影响</strong>：简化了应用程序的设计，因为每个数据包都是自包含的。</li>
+</ul>
+<h4 id="5-高效开销低">5. <strong>高效、开销低</strong></h4>
+<ul>
+<li><strong>含义</strong>：因为无需建立连接、无需维护连接状态、没有确认和重传机制，UDP的协议头非常小（只有8个字节），而TCP头至少20个字节。</li>
+<li><strong>影响</strong>：<strong>更少的CPU和带宽开销</strong>。对于需要高频、小数据量通信的场景，UDP的效率远高于TCP。</li>
+</ul>
+<h4 id="6-支持广播和组播">6. <strong>支持广播和组播</strong></h4>
+<ul>
+<li><strong>广播</strong>：可以将一个数据包发送给同一个局域网内的所有主机。</li>
+<li><strong>组播</strong>：可以将一个数据包发送给一组特定的主机。</li>
+<li><strong>TCP的限制</strong>：TCP是严格的一对一通信，无法实现广播和组播。</li>
+<li><strong>影响</strong>：这使得UDP在服务发现、在线视频会议、多人网络游戏等需要一对多通信的场景中不可或缺。</li>
+</ul>
+<hr>
+<h3 id="udp的典型应用场景">UDP的典型应用场景</h3>
+<p>基于以上特点，UDP在以下领域大放异彩：</p>
+<ol>
+<li>
+<p><strong>实时音视频流</strong>（如 Zoom, Skype, 直播）</p>
+<ul>
+<li><strong>原因</strong>：延迟比绝对的正确性更重要。观众宁愿看到一瞬间的马赛克（丢包导致），也无法忍受因为一个包的丢失和重传而导致的长时间卡顿（TCP的队头阻塞）。</li>
+</ul>
+</li>
+<li>
+<p><strong>DNS（域名解析系统）</strong></p>
+<ul>
+<li><strong>原因</strong>：DNS查询通常是非常小的、一次性的请求-响应。建立TCP连接的开销太大了，UDP的无连接特性完美匹配。</li>
+</ul>
+</li>
+<li>
+<p><strong>VPN协议（如 WireGuard）</strong></p>
+<ul>
+<li><strong>原因</strong>：VPN在底层协议之上构建了自己的可靠传输和加密机制。使用简单的UDP作为载体，可以避免“TCP重传叠加TCP重传”的问题，并且能更好地穿透防火墙。</li>
+</ul>
+</li>
+<li>
+<p><strong>QUIC协议（HTTP/3的底层）</strong></p>
+<ul>
+<li><strong>原因</strong>：QUIC之所以选择UDP，正是为了<strong>绕过操作系统的TCP协议栈</strong>，在用户空间实现自己的一套包含可靠传输、拥塞控制和多路复用的协议，从而从根本上解决TCP的队头阻塞问题。UDP在这里充当了一个“万能插座”的角色。</li>
+</ul>
+</li>
+<li>
+<p><strong>多人在线游戏</strong></p>
+<ul>
+<li><strong>原因</strong>：游戏状态更新极其频繁，对延迟要求极高。玩家的位置信息每秒更新数十次，丢失一个旧的位置包远没有收到一个新的位置包重要。游戏引擎通常会自定义可靠传输逻辑，只对关键指令（如“发射子弹”）进行重传，而对非关键状态（如玩家位置）采用“收到最新即覆盖”的策略。</li>
+</ul>
+</li>
+<li>
+<p><strong>物联网</strong></p>
+<ul>
+<li><strong>原因</strong>：很多物联网设备资源受限（计算能力、电量），无法承担TCP连接的状态维护开销。UDP的简单性非常适合它们进行小数据量的、间歇性的通信。</li>
+</ul>
+</li>
+</ol>
+<h3 id="总结">总结</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th align="left">特性</th><th align="left">UDP</th><th align="left">TCP</th></tr></thead><tbody><tr><td align="left"><strong>连接性</strong></td><td align="left">无连接</td><td align="left">面向连接</td></tr><tr><td align="left"><strong>可靠性</strong></td><td align="left"><strong>不可靠</strong>：不保证送达、不保证顺序</td><td align="left"><strong>可靠</strong>：保证送达、保证顺序</td></tr><tr><td align="left"><strong>传输模式</strong></td><td align="left">面向数据报（有边界）</td><td align="left">面向字节流（无边界）</td></tr><tr><td align="left"><strong>拥塞控制</strong></td><td align="left">无</td><td align="left">有</td></tr><tr><td align="left"><strong>速度/开销</strong></td><td align="left"><strong>快、开销低</strong></td><td align="left">相对慢、开销高</td></tr><tr><td align="left"><strong>通信模式</strong></td><td align="left">支持一对一、一对多、多对多</td><td align="left">仅支持一对一</td></tr></tbody></table>
+<p><strong>简单来说，UDP是一个功能简单、开销极低的传输工具。它把复杂的可靠性问题抛给了上层的应用程序，从而换来了极致的速度和灵活性。</strong> 它不是TCP的替代品，而是在特定需求下的一种高效选择。</p> </div> </div> <!-- 文章底部 --> <footer class="border-t border-primary-200 dark:border-primary-700 mt-8 pt-8"> <div class="flex justify-between items-center text-sm text-primary-500 dark:text-primary-400"> <span>发布于 2024/11/7</span>  </div> </footer> </article> </div>  </main> <footer class="border-t border-primary-200 dark:border-primary-700 mt-16" data-astro-cid-sckkx6r4> <div class="container mx-auto px-4 py-8 text-center text-primary-600 dark:text-primary-400" data-astro-cid-sckkx6r4> <p data-astro-cid-sckkx6r4>&copy; 2024 AI/ML 知识博客. 基于 Astro 构建.</p> </div> </footer>  </body> </html>

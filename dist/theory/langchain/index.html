@@ -1,0 +1,203 @@
+<!DOCTYPE html><html lang="zh-CN" class="scroll-smooth" data-astro-cid-sckkx6r4> <head><meta charset="UTF-8"><meta name="description" content="系统讲解 LangChain 中 Agent 的核心结构、工具调用机制与 LLM 交互流程，帮助理解其在智能体框架中的作用。"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous"><title>LangChain Agent 原理与工作机制 | light的知识博客</title><link rel="stylesheet" href="/_astro/_slug_.Dypz7GXS.css"><script type="module" src="/_astro/hoisted.n3v2uKZh.js"></script></head> <body class="bg-gradient-to-br from-primary-50 via-white to-accent-50/30 dark:from-primary-950 dark:via-primary-900 dark:to-accent-900/20 text-primary-900 dark:text-primary-50 transition-colors duration-300 relative" data-astro-cid-sckkx6r4> <!-- 背景图片层 -->  <!-- 背景装饰元素 --> <div class="fixed inset-0 -z-10 overflow-hidden" data-astro-cid-sckkx6r4> <!-- 网格背景 --> <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,black,transparent)] dark:bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)]" data-astro-cid-sckkx6r4></div> <!-- 渐变光斑 --> <div class="absolute -top-40 -right-40 w-80 h-80 bg-accent-400/20 rounded-full blur-3xl dark:bg-accent-600/10" data-astro-cid-sckkx6r4></div> <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-400/20 rounded-full blur-3xl dark:bg-blue-600/10" data-astro-cid-sckkx6r4></div> <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl dark:bg-purple-600/5" data-astro-cid-sckkx6r4></div> </div> <header class="border-b border-primary-200 dark:border-primary-700 bg-white dark:bg-primary-900 sticky top-0 z-40" data-astro-cid-sckkx6r4> <nav class="container mx-auto px-4 py-3" data-astro-cid-sckkx6r4> <div class="flex justify-between items-center" data-astro-cid-sckkx6r4> <a href="/" class="text-lg font-semibold text-primary-900 dark:text-primary-50 hover:text-primary-700 dark:hover:text-primary-300 transition-colors duration-200 flex items-center space-x-2" data-astro-cid-sckkx6r4> <div class="w-5 h-5 bg-primary-600 dark:bg-primary-400 rounded flex items-center justify-center text-white text-xs font-medium" data-astro-cid-sckkx6r4>
+知
+</div> <span data-astro-cid-sckkx6r4>light的知识博客</span> </a> <div class="flex items-center space-x-4" data-astro-cid-sckkx6r4> <a href="/" class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-50 transition-colors duration-200 py-1 px-2 rounded-md hover:bg-primary-100 dark:hover:bg-primary-800" data-astro-cid-sckkx6r4>
+首页
+</a> <!-- 分类下拉菜单 --> <div class="relative group" data-astro-cid-sckkx6r4> <button class="flex items-center text-sm text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-50 transition-colors duration-200 py-1 px-2 rounded-md hover:bg-primary-100 dark:hover:bg-primary-800" data-astro-cid-sckkx6r4>
+分类
+<svg class="w-3 h-3 ml-1 group-hover:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-astro-cid-sckkx6r4> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" data-astro-cid-sckkx6r4></path> </svg> </button> <div class="absolute top-full left-0 mt-1 w-48 bg-white dark:bg-primary-800 border border-primary-200 dark:border-primary-700 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50" data-astro-cid-sckkx6r4> <div class="py-1" data-astro-cid-sckkx6r4> <a href="/theory" class="block px-3 py-2 text-sm text-primary-600 dark:text-primary-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-150" data-astro-cid-sckkx6r4>
+理论基础
+</a> <a href="/models" class="block px-3 py-2 text-sm text-primary-600 dark:text-primary-400 hover:bg-green-50 dark:hover:bg-green-900/20 hover:text-green-600 dark:hover:text-green-400 transition-colors duration-150" data-astro-cid-sckkx6r4>
+算法与模型
+</a> <a href="/practice" class="block px-3 py-2 text-sm text-primary-600 dark:text-primary-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:text-purple-600 dark:hover:text-purple-400 transition-colors duration-150" data-astro-cid-sckkx6r4>
+实战与应用
+</a> <a href="/tools" class="block px-3 py-2 text-sm text-primary-600 dark:text-primary-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600 dark:hover:text-orange-400 transition-colors duration-150" data-astro-cid-sckkx6r4>
+工具与框架
+</a> <a href="/insights" class="block px-3 py-2 text-sm text-primary-600 dark:text-primary-400 hover:bg-pink-50 dark:hover:bg-pink-900/20 hover:text-pink-600 dark:hover:text-pink-400 transition-colors duration-150" data-astro-cid-sckkx6r4>
+思考与洞见
+</a> </div> </div> </div> <a href="/search" class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-50 transition-colors duration-200 py-1 px-2 rounded-md hover:bg-primary-100 dark:hover:bg-primary-800" data-astro-cid-sckkx6r4>
+搜索
+</a> <a href="/about" class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-50 transition-colors duration-200 py-1 px-2 rounded-md hover:bg-primary-100 dark:hover:bg-primary-800" data-astro-cid-sckkx6r4>
+关于
+</a> <button id="theme-toggle" class="p-1 rounded-md hover:bg-primary-100 dark:hover:bg-primary-800 transition-colors duration-200" data-astro-cid-sckkx6r4> <span class="dark:hidden text-sm" data-astro-cid-sckkx6r4>🌙</span> <span class="hidden dark:inline text-sm" data-astro-cid-sckkx6r4>☀️</span> </button> </div> </div> </nav> </header> <main data-astro-cid-sckkx6r4>  <div class="max-w-4xl mx-auto px-6 py-8"> <article class="bg-white dark:bg-primary-800 border border-primary-200 dark:border-primary-700 rounded-lg p-8"> <header class="mb-8"> <div class="flex items-center space-x-4 mb-4"> <span class="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"> theory </span> <time class="text-primary-600 dark:text-primary-400 text-sm"> 2024年10月3日 </time> </div> <h1 class="text-3xl font-bold text-primary-900 dark:text-primary-50 mb-4"> LangChain Agent 原理与工作机制 </h1> <p class="text-lg text-primary-600 dark:text-primary-400 leading-relaxed"> 系统讲解 LangChain 中 Agent 的核心结构、工具调用机制与 LLM 交互流程，帮助理解其在智能体框架中的作用。 </p> <div class="flex flex-wrap gap-2 mt-6"> <span class="px-3 py-1 bg-primary-100 dark:bg-primary-800 text-primary-700 dark:text-primary-300 rounded-full text-sm">
+#langchain </span><span class="px-3 py-1 bg-primary-100 dark:bg-primary-800 text-primary-700 dark:text-primary-300 rounded-full text-sm">
+#agent </span><span class="px-3 py-1 bg-primary-100 dark:bg-primary-800 text-primary-700 dark:text-primary-300 rounded-full text-sm">
+#llm </span><span class="px-3 py-1 bg-primary-100 dark:bg-primary-800 text-primary-700 dark:text-primary-300 rounded-full text-sm">
+#tool-calling </span><span class="px-3 py-1 bg-primary-100 dark:bg-primary-800 text-primary-700 dark:text-primary-300 rounded-full text-sm">
+#prompt-engineering </span> </div> </header> <!-- 文章内容 --> <div class="border-t border-primary-200 dark:border-primary-700 pt-8"> <div class="prose prose-lg dark:prose-invert max-w-none"> <hr>
+<h1 id="langchain-agent-原理详解">LangChain Agent 原理详解</h1>
+<p>LangChain Agent 原理详解
+LangChain 的 <strong>Agent（智能体）</strong> 是一种能够调用外部工具、动态规划任务步骤的智能调度系统。它的核心思想是：</p>
+<blockquote>
+<p>让 LLM 不仅能“回答问题”，还能“决定做什么”，并主动调用函数或工具完成复杂任务。</p>
+</blockquote>
+<hr>
+<h2 id="-一agent-的基本组成">🧩 一、Agent 的基本组成</h2>
+<p>一个 LangChain Agent 通常由以下几个部分组成：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>组件</th><th>作用</th></tr></thead><tbody><tr><td><strong>LLM</strong></td><td>大语言模型，用于推理、规划任务步骤。</td></tr><tr><td><strong>Tools</strong></td><td>工具集合，每个工具是一个可以被调用的函数，具有名称、描述和参数定义。</td></tr><tr><td><strong>AgentExecutor</strong></td><td>执行调度器，负责循环地解析 LLM 的思考与动作，执行工具并管理状态。</td></tr><tr><td><strong>Memory（可选）</strong></td><td>用于记录上下文，支持多轮对话或任务追踪。</td></tr><tr><td>交互示意图</td><td></td></tr><tr><td><img  src="/_astro/2.BsKBsHnc_Z23HTTf.webp" alt="alt text" width="2556" height="1170" loading="lazy" decoding="async"></td><td></td></tr></tbody></table>
+<hr>
+<h2 id="️-二agent-的运行原理">⚙️ 二、Agent 的运行原理</h2>
+<p>当用户向 Agent 发送请求时，整个流程如下：</p>
+<ol>
+<li>
+<p><strong>用户输入</strong></p>
+<ul>
+<li>用户提出自然语言任务（如“请读取 input.csv 并去掉空值列”）。</li>
+</ul>
+</li>
+<li>
+<p><strong>Agent 构造提示（Prompt）</strong></p>
+<ul>
+<li>Agent 将以下信息一并打包发送给 LLM：
+<ul>
+<li>用户问题；</li>
+<li>可用的工具列表（包括每个工具的名称、描述、参数）；</li>
+<li>指定输出格式，例如：
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Thought: ...</span></span>
+<span class="line"><span>Action: ...</span></span>
+<span class="line"><span>Action Input: ...</span></span>
+<span class="line"><span></span></span></code></pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>LLM 推理</strong></p>
+<ul>
+<li>LLM 根据提示生成一段结构化输出：
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Thought: 我需要读取文件内容</span></span>
+<span class="line"><span>Action: FilePreviewTool</span></span>
+<span class="line"><span>Action Input: "input.csv"</span></span>
+<span class="line"><span></span></span></code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Agent 解析与执行</strong></p>
+<ul>
+<li>Agent 解析出 <code>Action</code> 和 <code>Action Input</code>；</li>
+<li>调用对应的工具函数；</li>
+<li>获取工具返回结果（<code>Observation</code>）。</li>
+</ul>
+</li>
+<li>
+<p><strong>反馈循环</strong></p>
+<ul>
+<li>Agent 将工具执行结果与历史上下文拼接；</li>
+<li>再次发送给 LLM，让模型思考下一步：
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Thought: 文件读取成功，我需要生成清洗代码</span></span>
+<span class="line"><span>Action: CodeGeneratorTool</span></span>
+<span class="line"><span>Action Input: "去掉空值列"</span></span>
+<span class="line"><span></span></span></code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>迭代执行</strong></p>
+<ul>
+<li>这一过程会不断重复：
+<ul>
+<li><strong>LLM 推理 → 工具调用 → 结果反馈</strong></li>
+</ul>
+</li>
+<li>直到 LLM 输出：
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Final Answer: 文件已成功清洗并保存为 output.csv</span></span>
+<span class="line"><span></span></span></code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Agent 返回最终结果</strong></p>
+<ul>
+<li>Agent 检测到 <code>Final Answer</code>；</li>
+<li>将结果输出给用户端。</li>
+</ul>
+</li>
+<li>
+<p><strong>一个简单的例子</strong></p>
+<ul>
+<li>我们定义一个简单的数学运算工具
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="plaintext"><code><span class="line"><span> def add_numbers(expr: str) -> str:</span></span>
+<span class="line"><span>     """计算简单算式，如 '5 + 7'"""</span></span>
+<span class="line"><span>     try:</span></span>
+<span class="line"><span>         result = eval(expr)</span></span>
+<span class="line"><span>         return f"结果是 {result}"</span></span>
+<span class="line"><span>     except Exception as e:</span></span>
+<span class="line"><span>         return f"错误: {e}"</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span></span></span>
+<span class="line"><span> tools = [</span></span>
+<span class="line"><span>     Tool(</span></span>
+<span class="line"><span>         name="Calculator",</span></span>
+<span class="line"><span>         func=add_numbers,</span></span>
+<span class="line"><span>         description="用于计算简单的数学表达式，如 '5 + 7'。"</span></span>
+<span class="line"><span>     )</span></span>
+<span class="line"><span> ]</span></span>
+<span class="line"><span></span></span></code></pre>
+</li>
+<li>然后调用agent执行问题
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="plaintext"><code><span class="line"><span>  response = agent.run("请计算 8 * 7 等于多少？")</span></span>
+<span class="line"><span>  print("\n✅ 最终回答:", response)</span></span>
+<span class="line"><span></span></span></code></pre>
+</li>
+<li>回调打印llm的输入与输出
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="plaintext"><code><span class="line"><span>  class DeepSeekRequestLogger(BaseCallbackHandler):</span></span>
+<span class="line"><span> """显示 LLM 实际 HTTP 请求的 headers + body。"""</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span> def on_llm_start(self, serialized, prompts, **kwargs):</span></span>
+<span class="line"><span>     print("\n====================== 🛰️ Agent 向 DeepSeek 发送请求 ======================")</span></span>
+<span class="line"><span>     try:</span></span>
+<span class="line"><span>         # 打印 Prompt 内容（即 messages 的 user 部分）</span></span>
+<span class="line"><span>         print("🧾 Prompt 内容:")</span></span>
+<span class="line"><span>         print(json.dumps(prompts, ensure_ascii=False, indent=2, default=str))</span></span>
+<span class="line"><span>     except Exception:</span></span>
+<span class="line"><span>         pass</span></span>
+<span class="line"><span>     print("=====================================================================\n")</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span> def on_llm_end(self, response, **kwargs):</span></span>
+<span class="line"><span>     print("\n====================== 📡 DeepSeek 返回响应 ======================")</span></span>
+<span class="line"><span>     print(str(response))</span></span>
+<span class="line"><span>     print("=================================================================\n")</span></span>
+<span class="line"><span></span></span></code></pre>
+回调结果
+<img  src="/_astro/%E5%9B%BE%E7%89%871.DhS5aADt_ZSE7Wu.webp" alt="alt text" width="1687" height="656" loading="lazy" decoding="async">
+可以看到第一次请求，agent将用户问题、可用工具及其描述、回复格式发生给llm，然后llm将动作和参数返回给agent
+<img  src="/_astro/%E5%9B%BE%E7%89%872.B1xQ_AoK_kx9Mz.webp" alt="alt text" width="1680" height="999" loading="lazy" decoding="async">
+agent根据返回的内容调用对应函数，并将上一步llm的动作和执行响应拼接到之前的prompt中再发送给llm，llm根据响应，判断任务已经完成，输出final answer，agent收到final answer终止循环，将最终结果输出给用户</li>
+</ul>
+</li>
+</ol>
+<hr> </div> </div> <!-- 文章底部 --> <footer class="border-t border-primary-200 dark:border-primary-700 mt-8 pt-8"> <div class="flex justify-between items-center text-sm text-primary-500 dark:text-primary-400"> <span>发布于 2024/10/3</span>  </div> </footer> </article> </div>  </main> <footer class="border-t border-primary-200 dark:border-primary-700 mt-16" data-astro-cid-sckkx6r4> <div class="container mx-auto px-4 py-8 text-center text-primary-600 dark:text-primary-400" data-astro-cid-sckkx6r4> <p data-astro-cid-sckkx6r4>&copy; 2024 AI/ML 知识博客. 基于 Astro 构建.</p> </div> </footer>  </body> </html>
